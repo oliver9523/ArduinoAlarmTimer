@@ -1,6 +1,6 @@
-#include "SimpleTimer.h"
+#include "AlarmTimer.h"
 
-SimpleTimer::SimpleTimer(void){
+AlarmTimer::AlarmTimer(void){
     TotalTime = 0;
 
     FirstStarted = false;
@@ -18,7 +18,7 @@ SimpleTimer::SimpleTimer(void){
     CurrentTime = 0;
 }
 
-void SimpleTimer::Start(){
+void AlarmTimer::Start(){
     StartTime = millis();
     if (!FirstStarted){
         FirstStartTime = StartTime;
@@ -26,7 +26,7 @@ void SimpleTimer::Start(){
     }
 }
 
-unsigned long SimpleTimer::Stop(){
+unsigned long AlarmTimer::Stop(){
     //TODO - Make it stop everything to save resources
     CurrentTime = millis();
     ElapsedTime = (CurrentTime - StartTime);
@@ -34,27 +34,27 @@ unsigned long SimpleTimer::Stop(){
     return ElapsedTime;
 }
 
-unsigned long SimpleTimer::Reset(){
+unsigned long AlarmTimer::Reset(){
     unsigned long duration = Stop();
     Start();
     return duration;
 }
 
-void SimpleTimer::StartAlarmTimer(){
+void AlarmTimer::StartAlarmTimer(){
     AlarmStartTime = millis();
     AlarmStarted = true;
 }
 
-void SimpleTimer::StopAlarmTimer(){
+void AlarmTimer::StopAlarmTimer(){
     AlarmSet = false;
     AlarmStarted = false;
 }
 
-void SimpleTimer::ResetAlarmTimer(){
+void AlarmTimer::ResetAlarmTimer(){
     StartAlarmTimer();
 }
 
-void SimpleTimer::CheckAlarm(){
+void AlarmTimer::CheckAlarm(){
     if (!AlarmSet) return;
     if (!AlarmStarted) return;
 
@@ -71,30 +71,30 @@ void SimpleTimer::CheckAlarm(){
     }
 }
 
-void SimpleTimer::TriggerAlarm(){
+void AlarmTimer::TriggerAlarm(){
     //TODO - Add a callback manager for multiple callbacks
     (*callbackfn)();
 }
 
-unsigned long SimpleTimer::GetStartTime(){
+unsigned long AlarmTimer::GetStartTime(){
     return StartTime;
 }
 
-unsigned long SimpleTimer::GetElapsed(){
+unsigned long AlarmTimer::GetElapsed(){
     return millis() - StartTime;
 }
 
-bool SimpleTimer::CheckElapsed(unsigned long elapsed){
+bool AlarmTimer::CheckElapsed(unsigned long elapsed){
     if (GetElapsed() < elapsed) return false;
     return true;
 }
 
-unsigned long SimpleTimer::GetTotalTime(){
+unsigned long AlarmTimer::GetTotalTime(){
     //TODO - protect against overlfow
     return TotalTime;
 }
 
-void SimpleTimer::SetAlarm(unsigned long duration, void (*callback)()){
+void AlarmTimer::SetAlarm(unsigned long duration, void (*callback)()){
     //TODO - Add a callback manager for multiple callbacks
     AlarmTime = duration;
     AlarmSet = true;
@@ -102,7 +102,7 @@ void SimpleTimer::SetAlarm(unsigned long duration, void (*callback)()){
     callbackfn = callback;
 }
 
-void SimpleTimer::SetAlarm(unsigned long duration, void (*callback)(), int repeat){
+void AlarmTimer::SetAlarm(unsigned long duration, void (*callback)(), int repeat){
     //TODO - Add a callback manager for multiple callbacks
     AlarmTime = duration;
     AlarmSet = true;
@@ -110,7 +110,7 @@ void SimpleTimer::SetAlarm(unsigned long duration, void (*callback)(), int repea
     callbackfn = callback;
 }
 
-void SimpleTimer::AddTimeToAlarm(unsigned long ExtraTime, unsigned long MaxLength){
+void AlarmTimer::AddTimeToAlarm(unsigned long ExtraTime, unsigned long MaxLength){
     if (!AlarmSet) return;
     if (AlarmTriggered){
         ResetAlarmTimer();
@@ -124,17 +124,17 @@ void SimpleTimer::AddTimeToAlarm(unsigned long ExtraTime, unsigned long MaxLengt
     AlarmTime = min(AlarmTime, CurrentTime+MaxLength);
 }
 
-unsigned long SimpleTimer::GetTimeLeftOnAlarm() {
+unsigned long AlarmTimer::GetTimeLeftOnAlarm() {
     if (AlarmSet) return AlarmTime - (millis() - AlarmStartTime);
     return 0;
 }
 
-void SimpleTimer::Update(){
+void AlarmTimer::Update(){
     CurrentTime = millis();
     if (AlarmSet && !AlarmTriggered) CheckAlarm();
 }
 
-void SimpleTimer::AddAlarm(unsigned long duration, void (*callback)(), int repeat){
+void AlarmTimer::AddAlarm(unsigned long duration, void (*callback)(), int repeat){
     for (int i=0; i<MAX_NUM_ALARMS; i++){
         if (!Alarms[i].SET) {
             Alarms[i].Set(duration,callback,repeat);

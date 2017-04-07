@@ -1,8 +1,8 @@
 //TODO - protect against overflow after ~50 days when millis()
 //resets to 0
 
-#ifndef SIMPLETIMER_H
-#define SIMPLETIMER_H
+#ifndef ALARMETIMER_H
+#define ALARMTIMER_H
 
 #include <Arduino.h>
 
@@ -95,7 +95,7 @@ class Alarm {
 };
 
 
-class SimpleTimer {
+class AlarmTimer {
 private:
 
     unsigned long TotalTime;
