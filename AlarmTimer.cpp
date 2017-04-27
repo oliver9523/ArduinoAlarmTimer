@@ -41,6 +41,7 @@ unsigned long AlarmTimer::Reset(){
 }
 
 void AlarmTimer::StartAlarmTimer(){
+    if (AlarmStarted) return;
     AlarmStartTime = millis();
     AlarmStarted = true;
 }
@@ -51,6 +52,7 @@ void AlarmTimer::StopAlarmTimer(){
 }
 
 void AlarmTimer::ResetAlarmTimer(){
+    AlarmStarted = false;
     StartAlarmTimer();
 }
 
@@ -73,6 +75,7 @@ void AlarmTimer::CheckAlarm(){
 
 void AlarmTimer::TriggerAlarm(){
     //TODO - Add a callback manager for multiple callbacks
+    AlarmTriggered = true;
     (*callbackfn)();
 }
 
@@ -131,13 +134,15 @@ unsigned long AlarmTimer::GetTimeLeftOnAlarm() {
 
 void AlarmTimer::Update(){
     CurrentTime = millis();
-    if (AlarmSet && !AlarmTriggered) CheckAlarm();
+    if (AlarmSet) CheckAlarm();
 }
 
-void AlarmTimer::AddAlarm(unsigned long duration, void (*callback)(), int repeat){
+bool AlarmTimer::AddAlarm(unsigned long duration, void (*callback)(), int repeat){
     for (int i=0; i<MAX_NUM_ALARMS; i++){
         if (!Alarms[i].SET) {
             Alarms[i].Set(duration,callback,repeat);
+            return true;
         }
     }
+    return false;
 }

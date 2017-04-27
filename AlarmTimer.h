@@ -122,7 +122,7 @@ private:
 
     void TriggerAlarm();
 public:
-    SimpleTimer(void);
+    AlarmTimer(void);
     
     void Start();
     unsigned long Stop();
@@ -145,7 +145,7 @@ public:
 
     void Update();
 
-    void AddAlarm(unsigned long duration, void (*callback)(void), int repeat);
+    bool AddAlarm(unsigned long duration, void (*callback)(void), int repeat);
     
 };
 
